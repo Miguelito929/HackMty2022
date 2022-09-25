@@ -1,4 +1,5 @@
 import json
+from models import Event
 import random
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -120,7 +121,9 @@ def message(request):
     response.message('Thank for your message! A member of our team will be '
                      'in touch with you soon.')
 
-
+    # cat, loc, desc = resp.split("|")
+    # event = Event(category=cat, location=loc, description=desc)
+    # event.save()
 
 
     return HttpResponse(str(response))

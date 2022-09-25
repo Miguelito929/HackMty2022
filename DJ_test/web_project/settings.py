@@ -26,7 +26,7 @@ GOOGLE_MAPS_API_KEY = 'AIzaSyDdRSpLz1fbPPhT6HgSCKrHd14v1ZZvLNA'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.ngrok.io']
+ALLOWED_HOSTS = ['.ngrok.io', '127.0.0.1']
 
 
 # Application definition
@@ -76,9 +76,13 @@ WSGI_APPLICATION = "web_project.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "dfsigqt64dg8dc",
+        'USER': "jnaaoqpryxjpuq",
+        'PASSWORD': "b5ca185a487644c905d8691ab3d02387619c9979e1c8d75d29c72625f939065d",
+        'HOST': "ec2-3-214-2-141.compute-1.amazonaws.com",
+        'PORT': 5432,
     }
 }
 
