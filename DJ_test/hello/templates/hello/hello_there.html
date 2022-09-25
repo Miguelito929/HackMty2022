@@ -7,7 +7,7 @@
   <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
   <style type="text/css">
     #map {
-      height: 700px;
+      height: 98vh;
     }
   </style>
 </head>
@@ -27,7 +27,7 @@
       });
 
       for (let i = 0; i < dic.length; i++) {
-        const c1 = new google.maps.Circle({
+        new google.maps.Circle({
           strokeColor: "#FF0000",
           strokeOpacity: 0.8,
           strokeWeight: 2,
