@@ -11,6 +11,7 @@ from twilio.twiml.messaging_response import MessagingResponse # for Whatsapp
 import time
 import openai
 import deepl
+import googlemaps
 from twilio.rest import Client
 
 
@@ -24,6 +25,10 @@ openai.api_key = "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" # Falta g
 
 # Deepl key
 deepl_key = "104f9e4d-8f01-1494-3194-8f9d63b7a1cc:fx"
+
+# Google maps key
+maps_key = "AIzaSyDt2BpJAtrIU3S-tQ_GcU_NmUnndZadtNk"
+gmaps = googlemaps.Client(key=maps_key)
 
 
 def home2(request):
@@ -125,7 +130,10 @@ def message(request):
     response.message('¡Ay Wey! Gracias por reportar.')
 
     cat, desc, loc = [x for x in resp.split("|") if x]
-    event = Event(category=cat, location=loc, description=desc)
+    geocode = gmaps.geocode(loc)
+    lat = geocode[0]["geometry"]["location"]["lat"]
+    lng = geocode[0]["geometry"]["location"]["lng"]
+    event = Event(category=cat, latitude=lat, longitude=lng, description=desc)
     event.save()
 
 
