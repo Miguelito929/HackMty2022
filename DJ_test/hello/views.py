@@ -1,4 +1,5 @@
-import re
+import json
+import random
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.timezone import datetime
@@ -32,7 +33,10 @@ def home(request):
         request,
         'hello/hello_there.html',
         {
-            'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY
+            'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+            'someDjangoVariable' : json.dumps([{'lat': 25.6787278+random.random()*0.1, 
+                                                'lng': -100.2899258+random.random()*0.1}
+                                                for _ in range(25)])
         }
     )
 
