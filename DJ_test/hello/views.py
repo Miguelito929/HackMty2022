@@ -30,6 +30,10 @@ def home2(request):
     return HttpResponse("Bienvenido a AI Way, tu aliado en mantenerte seguro")
 
 def home(request):
+
+    all_entries = Event.objects.all()
+    print("$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", [(entry.category, entry.location, entry.description) for entry in all_entries])
+
     return render(
         request,
         'hello/hello_there.html',
