@@ -1,5 +1,5 @@
 import json
-from models import Event
+from hello.models import Event
 import random
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -115,15 +115,14 @@ def message(request):
 
     resp = recognize_alert(f'{message}', user)
 
-    print(resp)
+    print( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" , resp.split("|"))
 
     response = MessagingResponse()
-    response.message('Thank for your message! A member of our team will be '
-                     'in touch with you soon.')
+    response.message('¡Ay Wey! Gracias por reportar.')
 
-    # cat, loc, desc = resp.split("|")
-    # event = Event(category=cat, location=loc, description=desc)
-    # event.save()
+    cat, desc, loc = [x for x in resp.split("|") if x]
+    event = Event(category=cat, location=loc, description=desc)
+    event.save()
 
 
     return HttpResponse(str(response))
