@@ -1,4 +1,4 @@
-from platform import node
+import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.timezone import datetime
@@ -13,6 +13,6 @@ def home(request):
         'hello/hello_there.html',
         {
             'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
-            'someDjangoVariable': [{ "lat": 25.65, "lng": -100.298 }]
+            'someDjangoVariable' : json.dumps([{'lat': 25.6487278, 'lng': -100.2899258 }])
         }
     )

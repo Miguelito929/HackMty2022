@@ -18,14 +18,12 @@
   </div>
 
   <script type="text/javascript">
-    var dic = "{{someDjangoVariable}}";
-  </script>
-
-  <script type="text/javascript">
     function initMap() {
+      dic = JSON.parse("{{someDjangoVariable|escapejs}}");
+      console.log(dic)
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 12.2,
-        center: dic,
+        center: dic[0],
       });
 
 
@@ -36,7 +34,7 @@
         fillColor: "#FF0000",
         fillOpacity: 0.35,
         map,
-        center: dic,
+        center: dic[0],
         radius: 500,
       });
 
