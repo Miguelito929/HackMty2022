@@ -23,7 +23,7 @@ auth_token = "ebcfa1942f52d48027c1795f46be45eb"      # Falta getenv
 client = Client(account_sid, auth_token) 
 
 # Openai key
-openai.api_key = "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" # Falta getenv
+openai.api_key = "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" # Falta getenv
 
 # Deepl key
 deepl_key = "104f9e4d-8f01-1494-3194-8f9d63b7a1cc:fx"
@@ -135,8 +135,10 @@ def message(request):
         cat, desc, loc = [x for x in resp.split("|") if x]
         geocode = gmaps.geocode(loc)
         print("GEOCODE: ", geocode)
+        
         lat = geocode[0]["geometry"]["location"]["lat"]
         lng = geocode[0]["geometry"]["location"]["lng"]
+ 
         event = Event(category=cat, latitude=lat, longitude=lng, description=desc)
         event.save()
 
