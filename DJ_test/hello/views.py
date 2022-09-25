@@ -1,3 +1,4 @@
+from imp import reload
 import json
 from hello.models import Event
 import random
@@ -37,16 +38,19 @@ def home2(request):
 def home(request):
 
     all_entries = Event.objects.all()
-    print("$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", [(entry.category, entry.location, entry.description) for entry in all_entries])
+    events = [{"category": entry.category, 
+                "latitude": entry.latitude, 
+                "longitude": entry.longitude, 
+                "description": entry.description} 
+                for entry in all_entries]
+    print("$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", events)
 
     return render(
         request,
         'hello/hello_there.html',
         {
             'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
-            'someDjangoVariable' : json.dumps([{'lat': 25.6787278+random.random()*0.1, 
-                                                'lng': -100.2899258+random.random()*0.1}
-                                                for _ in range(25)])
+            'someDjangoVariable' : json.dumps(events)
         }
     )
 
@@ -54,7 +58,7 @@ def home(request):
 
 # Function that reads the last message
 def read_message() -> str:
-    message = client.messages.list()
+    message = client.messages.list()[0]
     print(message.body)
     return message.body
 
@@ -131,10 +135,10 @@ def message(request):
 
     cat, desc, loc = [x for x in resp.split("|") if x]
     geocode = gmaps.geocode(loc)
+    print("GEOCODE: ", geocode)
     lat = geocode[0]["geometry"]["location"]["lat"]
     lng = geocode[0]["geometry"]["location"]["lng"]
     event = Event(category=cat, latitude=lat, longitude=lng, description=desc)
     event.save()
-
 
     return HttpResponse(str(response))

@@ -20,10 +20,10 @@
   <script type="text/javascript">
     function initMap() {
       dic = JSON.parse("{{someDjangoVariable|escapejs}}");
-      console.log(dic)
+      console.log(dic, { "lat": dic[0]['latitude'], "lng": dic[0]['longitude'] })
       const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12.2,
-        center: dic[0],
+        zoom: 15,
+        center: { "lat": dic[0]["latitude"], "lng": dic[0]["longitude"] },
       });
 
       for (let i = 0; i < dic.length; i++) {
@@ -34,8 +34,8 @@
           fillColor: "#FF0000",
           fillOpacity: 0.35,
           map,
-          center: dic[i],
-          radius: 500,
+          center: { "lat": dic[i]["latitude"], "lng": dic[i]["longitude"] },
+          radius: 50,
         });
       }
 
