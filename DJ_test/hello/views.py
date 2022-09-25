@@ -2,8 +2,9 @@ from imp import reload
 import json
 from hello.models import Event
 import random
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.urls import reverse
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.utils.timezone import datetime
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt # whatsapp
@@ -37,12 +38,11 @@ def home2(request):
 
 def home(request):
 
-    all_entries = Event.objects.all()
     events = [{"category": entry.category, 
                 "latitude": entry.latitude, 
                 "longitude": entry.longitude, 
                 "description": entry.description} 
-                for entry in all_entries]
+                for entry in Event.objects.all()]
     print("$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", events)
 
     return render(
@@ -117,28 +117,38 @@ def recognize_alert(message, user):
 
 @csrf_exempt
 def message(request):
-    user = request.POST.get('From')
-    message = request.POST.get('Body')
-    # data_client = client.messages.list(limit=1, )[0]
-    # msg_id = request.POST.get('MessageSid')
-    
-    # print(request.POST)
-    # print(date_created) # when was the message forwarded
-    print(f'{user} says {message}')
+    if request.method == 'POST':
+        user = request.POST.get('From')
+        message = request.POST.get('Body')
+        # data_client = client.messages.list(limit=1, )[0]
+        # msg_id = request.POST.get('MessageSid')
+        
+        # print(request.POST)
+        # print(date_created) # when was the message forwarded
+        print(f'{user} says {message}')
 
-    resp = recognize_alert(f'{message}', user)
+        resp = recognize_alert(f'{message}', user)
 
-    print( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" , resp.split("|"))
+        response = MessagingResponse()
+        response.message('¡Ay Wey! Gracias por reportar.')
 
-    response = MessagingResponse()
-    response.message('¡Ay Wey! Gracias por reportar.')
+        cat, desc, loc = [x for x in resp.split("|") if x]
+        geocode = gmaps.geocode(loc)
+        print("GEOCODE: ", geocode)
+        lat = geocode[0]["geometry"]["location"]["lat"]
+        lng = geocode[0]["geometry"]["location"]["lng"]
+        event = Event(category=cat, latitude=lat, longitude=lng, description=desc)
+        event.save()
 
-    cat, desc, loc = [x for x in resp.split("|") if x]
-    geocode = gmaps.geocode(loc)
-    print("GEOCODE: ", geocode)
-    lat = geocode[0]["geometry"]["location"]["lat"]
-    lng = geocode[0]["geometry"]["location"]["lng"]
-    event = Event(category=cat, latitude=lat, longitude=lng, description=desc)
-    event.save()
-
-    return HttpResponse(str(response))
+        return HttpResponse(str(response))
+    else:
+        return render(request, 'hello/hello_there.html',
+            {
+                'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+                'someDjangoVariable' : json.dumps([{"category": entry.category, 
+                    "latitude": entry.latitude, 
+                    "longitude": entry.longitude, 
+                    "description": entry.description} 
+                    for entry in Event.objects.all()])
+            }
+        )
